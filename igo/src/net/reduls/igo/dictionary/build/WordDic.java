@@ -59,7 +59,8 @@ public final class WordDic {
 	final ReadLine rl = new ReadLine(path,encoding);
 	try {
 	    for(String line=rl.read(); line!=null; line=rl.read()) {
-		final String key = line.substring(0, line.indexOf(delim,1));
+		final boolean iscomma = line.startsWith("\",\",");
+		final String key = iscomma ? "," : line.substring(0, line.indexOf(delim,1));
 		keyList.add(prefix+key);
 	    }
 	} catch (IndexOutOfBoundsException e) {
@@ -161,7 +162,8 @@ public final class WordDic {
 	final ReadLine rl = new ReadLine(path, encoding);
 	try {
 	    for(String s=rl.read(); s!=null; s=rl.read()) {
-		final int p1 = s.indexOf(delim,1);     // key
+		final boolean iscomma = s.startsWith("\",\",");
+		final int p1 = iscomma ? 3 : s.indexOf(delim,1);     // key
 		final int p2 = s.indexOf(delim,p1+1);  // left id
 		final int p3 = s.indexOf(delim,p2+1);  // right id
 		final int p4 = s.indexOf(delim,p3+1);  // cost
@@ -172,7 +174,7 @@ public final class WordDic {
 
 		final String data = s.substring(p4+1); // data
 
-		final int id = wid.search(prefix+s.substring(0,p1));
+		final int id = wid.search(prefix+(iscomma ? "," : s.substring(0,p1)));
 		if(id < 0)
 		    throw parseException("Word '"+s.substring(0,p1)+"' is unregistered in trie",path,rl);
 		
